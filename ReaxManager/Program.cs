@@ -587,6 +587,12 @@ namespace ReactionManager2
                 File.AppendAllText(@"ReactionData.txt", $"{totalO2Num[i]}" + Environment.NewLine);
             }
 
+            File.AppendAllText(@"ReactionData.txt", "Number of Reaction" + Environment.NewLine);
+            for (int i = 0; i < totalTime - 1; i++)
+            {
+                File.AppendAllText(@"ReactionData.txt", $"{totalReactionNum[i]}" + Environment.NewLine);
+            }
+
             File.AppendAllText(@"ReactionData.txt", "ReactionPerTime" + Environment.NewLine);
             for (int i = 0; i < totalTime - 1; i++)
             {
