@@ -1,0 +1,15 @@
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/bin/Debug/net5.0/ReaxManager.deps.json
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/bin/Debug/net5.0/ReaxManager.runtimeconfig.json
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/bin/Debug/net5.0/ReaxManager.runtimeconfig.dev.json
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/bin/Debug/net5.0/ReaxManager.dll
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/bin/Debug/net5.0/ref/ReaxManager.dll
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/bin/Debug/net5.0/ReaxManager.pdb
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager.csprojAssemblyReference.cache
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager.GeneratedMSBuildEditorConfig.editorconfig
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager.AssemblyInfoInputs.cache
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager.AssemblyInfo.cs
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager.csproj.CoreCompileInputs.cache
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager.dll
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/obj/Debug/net5.0/ref/ReaxManager.dll
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager.pdb
+/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager.genruntimeconfig.cache
