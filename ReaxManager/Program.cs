@@ -122,7 +122,7 @@ namespace ReactionManager2
                 idToType.Add(0);
             }
             typeToAtom = new Dictionary<int, string>()
-            {
+            {   
                 {1,"C"},{2,"C"},{3,"O"},{4,"C"},{5,"O"},{6,"F"},{7,"H"},{8,"H"},
                 {9,"O"},{10,"H"},{11,"O"},{12,"_C_"},{13,"_C_"},{14,"H"},{15,"H"},{16,"_C_"},{17,"_C_"},{18,"_C_"},{19, "_C_"},{20, "H"},{21, "_C_"}
             };
@@ -544,7 +544,7 @@ namespace ReactionManager2
                 int H2ONum = 0;
                 int O2Num = 0;
                 int ReactionNum = 0;
-                SolveAllAtomsReaction(i, false, ref molNum, ref D4OHNum, ref H2ONum, ref O2Num, ref ReactionNum, totalReaction);
+                SolveAllAtomsReaction(i, true, ref molNum, ref D4OHNum, ref H2ONum, ref O2Num, ref ReactionNum, totalReaction);
                 totalMolNum.Add(molNum);
                 totalD4OHNum.Add(D4OHNum);
                 totalH2ONum.Add(H2ONum);
@@ -591,19 +591,26 @@ namespace ReactionManager2
             for (int i = 0; i < totalTime - 1; i++)
             {
                 File.AppendAllText(@"ReactionData.txt", $"TimeStep{i}" + Environment.NewLine);
-                foreach (List<List<string>> perTime in totalReaction[i])
+                for(int i2=0; i2<totalReaction[i].Count; i2++)
                 {
-                    File.AppendAllText(@"ReactionData.txt", "【" + Environment.NewLine);
-                    foreach (List<string> reacprod in perTime)
+                    File.AppendAllText(@"ReactionData.txt", $"------反応{i2+1}------" + Environment.NewLine);
+                    for(int j=0; j<totalReaction[i][i2].Count; j++)
                     {
-                        foreach (string smiles in reacprod)
+                        for(int k=0; k<totalReaction[i][i2][j].Count; k++)
                         {
-                            File.AppendAllText(@"ReactionData.txt", $"{smiles}" + Environment.NewLine);
+                            File.AppendAllText(@"ReactionData.txt", $"{totalReaction[i][i2][j][k]}" + Environment.NewLine);
+                            if(k == totalReaction[i][i2][j].Count-1)
+                            {
+                                break;
+                            }
                             File.AppendAllText(@"ReactionData.txt", "+" + Environment.NewLine);
                         }
-                        File.AppendAllText(@"ReactionData.txt", "↓" + Environment.NewLine);
+                        if(j==0)
+                        {
+                            File.AppendAllText(@"ReactionData.txt", "--↓↓--" + Environment.NewLine);
+                        }                       
                     }
-                    File.AppendAllText(@"ReactionData.txt", "】" + Environment.NewLine);
+                    File.AppendAllText(@"ReactionData.txt", "------------" + Environment.NewLine);
                 }
             }
         }
