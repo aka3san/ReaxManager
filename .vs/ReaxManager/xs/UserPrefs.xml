@@ -1,8 +1,8 @@
 ﻿<Properties StartupConfiguration="{471D9D66-B10C-4806-A6D0-E146085F4FFD}|Default">
-  <MonoDevelop.Ide.ItemProperties.ReaxManager FirstBuild="True" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.ReaxManager PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="ReaxManager/Program.cs">
     <Files>
-      <File FileName="ReaxManager/Program.cs" Line="612" Column="1" />
+      <File FileName="ReaxManager/Program.cs" Line="542" Column="32" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

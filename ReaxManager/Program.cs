@@ -372,13 +372,15 @@ namespace ReactionManager2
                         }
                         chainCount++;
                     }
-
+                    string smiles_temp = ChangeFromIDToString(molList_temp2, time + i, time).Replace("X", "");
+                    if (smiles_temp != "" || smiles_temp != "#H#" )
+                    {
+                        molNumToSmiles[i].Add(smiles_temp);
+                        m2aList[i].Add(molList_temp2);
+                    }                  
                     if (molList_temp.Count != 0)
                     {
-                        molNumToString[i].Add(ChangeFromIDToString(molList_temp, time + i, time));
-                        molNumToSmiles[i].Add(ChangeFromIDToString(molList_temp2, time + i, time).Replace("X", "")); ;//Smiles形式(Hを削除)
-                        //molList_temp = new List<int>(new HashSet<int>(molList_temp));
-                        m2aList[i].Add(molList_temp);
+                        molNumToString[i].Add(ChangeFromIDToString(molList_temp, time + i, time));                                                
                         Console.WriteLine($"molList_temp: {molList_temp.Count}");
                     }
                     //atomList_copyが全てnullの場合、break
