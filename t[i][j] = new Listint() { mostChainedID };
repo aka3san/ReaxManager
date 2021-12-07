@@ -1,0 +1,23 @@
+[33mcommit 85ee8c1f913b31dadf2a060efb121fa375c2a56f[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: aka3san <tzmtdustnsk.azs@gmail.com>
+Date:   Sun Dec 5 18:58:10 2021 +0900
+
+    Hだけの場合も分子としてカウントされていたので、そこを修正した。
+
+[33mcommit dfb3c79d2629e28e65f669129f8fc2a3d7e41ba2[m
+Author: aka3san <tzmtdustnsk.azs@gmail.com>
+Date:   Fri Dec 3 17:48:02 2021 +0900
+
+    各タイムステップにおける反応回数も出力できるようにした。
+
+[33mcommit baf3ae1718c3bd4838e8650c376f014f382808d9[m
+Author: aka3san <tzmtdustnsk.azs@gmail.com>
+Date:   Fri Dec 3 14:58:52 2021 +0900
+
+    テキストファイルを見やすく出力できるようにした。
+
+[33mcommit 9f7e88e533952a1386ef15f61fc4d05bdea83189[m
+Author: aka3san <tzmtdustnsk.azs@gmail.com>
+Date:   Fri Dec 3 13:41:28 2021 +0900
+
+    git init

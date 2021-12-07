@@ -27,7 +27,7 @@ namespace ReactionManager2
         static void Main(string[] args)
         {
             ReactionManager reactionManager = new ReactionManager();
-            reactionManager.FileOpen("bondsH2OO2.reaxc", 48568, 22);
+            reactionManager.FileOpen("bondsO2.reaxc", 48328, 22);
             reactionManager.GetDataPerTime(0, 22);
         }
 
@@ -124,7 +124,7 @@ namespace ReactionManager2
             typeToAtom = new Dictionary<int, string>()
             {   
                 {1,"C"},{2,"C"},{3,"O"},{4,"C"},{5,"O"},{6,"F"},{7,"H"},{8,"H"},
-                {9,"O"},{10,"H"},{11,"O"},{12,"_C_"},{13,"_C_"},{14,"H"},{15,"H"},{16,"_C_"},{17,"_C_"},{18,"_C_"},{19, "_C_"},{20, "H"},{21, "_C_"}
+                {9,"O"},{10,"_C_"},{11,"_C_"},{12,"_C_"},{13,"H"},{14,"_C_"},{15,"_C_"},{16,"_C_"},{17,"_C_"},{18,"H"},{19, "_C_"}
             };
 
             StreamReader streamReader = new StreamReader(filePath);
@@ -225,13 +225,12 @@ namespace ReactionManager2
 
 
         //ある原子IDを受け取って、その原子と結合している原子の中から、一番繋がっている原子IDを返す。(目的: 鎖の特定)
-        public int FindMostChainedAtom(int atomID, List<List<int>> atomList_copy, int timeStep)
+        public int FindMostChainedAtom(int atomID, List<List<int>> atomList_copy, int timeStep, bool isRemoved)
         {
             if (atomList_copy[atomID - 1] == null)
             {
                 return -1;//結合している全ての原子を列挙済み
-            }
-            List<int> atomList140 = atomList_copy[140];
+            }          
             int atom = atomList_copy[atomID - 1][0];
             foreach (int _atom in atomList_copy[atomID - 1])
             {
@@ -239,6 +238,10 @@ namespace ReactionManager2
                 {
                     atom = _atom;
                 }
+            }
+            if(!isRemoved)
+            {
+                return atom;
             }
             atomList_copy[atomID - 1].Remove(atom);
             atomList_copy[atom - 1].Remove(atomID);
@@ -277,11 +280,16 @@ namespace ReactionManager2
                 {
                     if ((typeToAtom[idToType[j]] == "H" || typeToAtom[idToType[j]] == "F") && atomList[i][j].Count >= 2 && HBIsIgnored)
                     {
-                        for (int k = 1; k < atomList[i][j].Count; k++)
+                        int mostChainedID = FindMostChainedAtom(j + 1, atomList[i], i, false);                       
+                        for (int k = 0; k < atomList[i][j].Count; k++)
                         {
+                            if(atomList[i][j][k] == mostChainedID)
+                            {
+                                continue;
+                            }
                             atomList[i][atomList[i][j][k] - 1].Remove(j + 1);
                         }
-                        atomList[i][j] = new List<int>() { atomList[i][j][0] };
+                        atomList[i][j] = new List<int>() { mostChainedID };
                     }
                     for (int k = 0; k < atomList[i][j].Count; k++)
                     {
@@ -333,7 +341,7 @@ namespace ReactionManager2
                             List<int> chainedList = new List<int>();
                             while (true) //鎖の末端まで繰り返す。(一本の鎖の完成)
                             {
-                                int addAtom = FindMostChainedAtom(atomID, atomList_copy, time + i);//チェインリストに加える原子を決める。(atomList_copyの結合情報も削除)
+                                int addAtom = FindMostChainedAtom(atomID, atomList_copy, time + i, true); //チェインリストに加える原子を決める。(atomList_copyの結合情報も削除)
                                 if (addAtom == -1)
                                 {
                                     break;
@@ -373,7 +381,7 @@ namespace ReactionManager2
                         chainCount++;
                     }
                     string smiles_temp = ChangeFromIDToString(molList_temp2, time + i, time).Replace("X", "");
-                    if (smiles_temp != "" || smiles_temp != "#H#" )
+                    if (smiles_temp != "" && smiles_temp != "#H#" )
                     {
                         molNumToSmiles[i].Add(smiles_temp);
                         m2aList[i].Add(molList_temp2);
