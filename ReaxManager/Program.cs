@@ -27,8 +27,8 @@ namespace ReactionManager2
         static void Main(string[] args)
         {
             ReactionManager reactionManager = new ReactionManager();
-            reactionManager.FileOpen("bondsO2.reaxc", 48328, 22);
-            reactionManager.GetDataPerTime(0, 22);
+            reactionManager.FileOpen("bondsH2O_short.reaxc", 48228, 252);
+            reactionManager.GetDataPerTime(0, 252);
         }
 
 
@@ -123,8 +123,8 @@ namespace ReactionManager2
             }
             typeToAtom = new Dictionary<int, string>()
             {   
-                {1,"C"},{2,"C"},{3,"O"},{4,"C"},{5,"O"},{6,"F"},{7,"H"},{8,"H"},
-                {9,"O"},{10,"_C_"},{11,"_C_"},{12,"_C_"},{13,"H"},{14,"_C_"},{15,"_C_"},{16,"_C_"},{17,"_C_"},{18,"H"},{19, "_C_"}
+                {1,"O"},{2,"H"},{3,"O"},{4,"C"},{5,"C"},{6,"O"},{7,"C"},{8,"O"},
+                {9,"F"},{10,"H"},{11,"H"},{12,"_C_"},{13,"_C_"},{14,"_C_"},{15,"H"},{16,"_C_"},{17,"_C_"},{18,"_C_"},{19, "_C_"}, {20, "H"}, {21, "_C_"}
             };
 
             StreamReader streamReader = new StreamReader(filePath);
@@ -138,8 +138,7 @@ namespace ReactionManager2
                     continue;
                 }
                 if (line[1] == "1")
-                {
-                    Console.WriteLine("timestepSTART");
+                {                    
                     timeStepCount++;
                 }
                 //Console.WriteLine($"{atomList[timeStepCount].Count}");
@@ -388,8 +387,7 @@ namespace ReactionManager2
                     }                  
                     if (molList_temp.Count != 0)
                     {
-                        molNumToString[i].Add(ChangeFromIDToString(molList_temp, time + i, time));                                                
-                        Console.WriteLine($"molList_temp: {molList_temp.Count}");
+                        molNumToString[i].Add(ChangeFromIDToString(molList_temp, time + i, time));                                                                        
                     }
                     //atomList_copyが全てnullの場合、break
                     int j_count = 0;
@@ -404,8 +402,7 @@ namespace ReactionManager2
                     }
 
                     if (j_count >= atomList_copy.Count)
-                    {
-                        Console.WriteLine("繰り返しを抜けました。");
+                    {                       
                         break;
                     }
                 }
@@ -560,8 +557,9 @@ namespace ReactionManager2
                 totalH2ONum.Add(H2ONum);
                 totalO2Num.Add(O2Num);
                 totalReactionNum.Add(ReactionNum);
+                Console.WriteLine($"進行度: {i + 1}/{totalTime}");
             }
-            Console.WriteLine(String.Join(",", totalMolNum));
+            Console.WriteLine("テキストファイルが出力されました。");
 
             //テキストファイルに出力
             try
