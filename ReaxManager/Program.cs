@@ -27,7 +27,7 @@ namespace ReactionManager2
         static void Main(string[] args)
         {
             ReactionManager reactionManager = new ReactionManager();
-            reactionManager.FileOpen("bondsH2O_short.reaxc", 48228, 252);
+            reactionManager.FileOpen("bondsH2OO2_short.reaxc", 48268, 252);
             reactionManager.GetDataPerTime(0, 252);
         }
 
@@ -81,6 +81,11 @@ namespace ReactionManager2
             {
                 isChanged[progress] = true;
             }
+            else
+            {
+                return;
+            }
+
             if (reacProgressList.Contains(a2mR[progress]) || prodProgressList.Contains(a2mP[progress]))
             {
                 reacMList.Add(new List<int>() { 0 });
@@ -123,7 +128,7 @@ namespace ReactionManager2
             }
             typeToAtom = new Dictionary<int, string>()
             {   
-                {1,"O"},{2,"H"},{3,"O"},{4,"C"},{5,"C"},{6,"O"},{7,"C"},{8,"O"},
+                {1,"O"},{2,"O"},{3,"H"},{4,"C"},{5,"C"},{6,"O"},{7,"C"},{8,"O"},
                 {9,"F"},{10,"H"},{11,"H"},{12,"_C_"},{13,"_C_"},{14,"_C_"},{15,"H"},{16,"_C_"},{17,"_C_"},{18,"_C_"},{19, "_C_"}, {20, "H"}, {21, "_C_"}
             };
 
@@ -316,13 +321,31 @@ namespace ReactionManager2
                 for (int k = 0; k < atomList[time + i].Count; k++)
                 {
                     atomList_copy[k] = new List<int>(atomList[time + i][k]);
-                    if (atomList_copy[k].Count == 0)
+                    if (atomList_copy[k].Count == 0 || typeToAtom[idToType[k]] == "_C_")
                     {
                         atomList_copy[k] = null;
                     }
                 }
                 while (true) //atomList_copyが全てnullになるまで繰り返す。(全ての分子の完成)
                 {
+                    if(atomList_copy[j] == null)
+                    {
+                        int j_count2 = 0;
+                        for (int k = 0; k < atomList_copy.Count; k++)
+                        {
+                            j_count2++;
+                            if (atomList_copy[k] != null)
+                            {
+                                j = k;
+                                break;
+                            }
+                        }
+
+                        if (j_count2 >= atomList_copy.Count)
+                        {
+                            break;
+                        }
+                    }
                     List<int> molList_temp = new List<int>() { j + 1 };
                     List<int> molList_temp2 = new List<int>() { j + 1 };
                     List<int> preMolList_temp = new List<int>();
@@ -360,7 +383,7 @@ namespace ReactionManager2
                             if (chainCount == 0)
                             {
                                 molList_temp.InsertRange(molList_temp.IndexOf(atom) + 1, chainedList);
-                                chainedList.RemoveAll(item => typeToAtom[idToType[item]] == "H");
+                                chainedList.RemoveAll(item => typeToAtom[idToType[item-1]] == "H");
                                 molList_temp2.InsertRange(molList_temp2.IndexOf(atom) + 1, chainedList);
                             }
                             else if (chainCount != 0 && chainedList.Count != 0)
@@ -389,22 +412,7 @@ namespace ReactionManager2
                     {
                         molNumToString[i].Add(ChangeFromIDToString(molList_temp, time + i, time));                                                                        
                     }
-                    //atomList_copyが全てnullの場合、break
-                    int j_count = 0;
-                    for (int k = 0; k < atomList_copy.Count; k++)
-                    {
-                        j_count++;
-                        if (atomList_copy[k] != null)
-                        {
-                            j = k;
-                            break;
-                        }
-                    }
-
-                    if (j_count >= atomList_copy.Count)
-                    {                       
-                        break;
-                    }
+                    
                 }
             }
             totalMolNum = molNumToSmiles[0].Count;
@@ -433,8 +441,12 @@ namespace ReactionManager2
                     case 111:
                         totalD4OHNum += 1;
                         break;
+                    case 113:
+                        totalD4OHNum += 1;
+                        break;
+
                 }
-                if (smiles2.Length % 111 == 0 && smiles2.Length >= 111)
+                if (smiles2.Length % 111 == 0 && smiles2.Length > 111)
                 {
                     totalD4OHNum += smiles2.Length / 111 - 1;
                 }
