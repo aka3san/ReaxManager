@@ -44,6 +44,10 @@ namespace ReactionManager2
                 {
                     continue;
                 }
+                if(typeToAtom[idToType[aList[i]-1]] == "H")
+                {
+                    continue;
+                }
                 molnum.Add(a2m[aList[i] - 1]);
                 progressList.Add(a2m[aList[i] - 1]);
             }
@@ -77,13 +81,17 @@ namespace ReactionManager2
         public void SolveReaction(List<int> aList, List<int> a2mR, List<int> a2mP, List<List<int>> m2aR, List<List<int>> m2aP,
                                   List<List<int>> reacMList, List<List<int>> prodMList, List<int> molListReac, List<int> molListProd, int progress, List<int> reacProgressList, List<int> prodProgressList, List<bool> isChanged, int time)
         {
-            if (!IsListEquall(atomList[time][progress], atomList[time + 1][progress]))
+            if (IsListEquall(atomList[time][progress], atomList[time + 1][progress]) || typeToAtom[idToType[progress]] == "H" )
             {
-                isChanged[progress] = true;
+                return;
+            }
+            else if(typeToAtom[idToType[progress]] == "O" )//OからHが取れたorOにHがついただけの反応のとき、早期リターン。
+            {
+                return;
             }
             else
             {
-                return;
+                isChanged[progress] = true;
             }
 
             if (reacProgressList.Contains(a2mR[progress]) || prodProgressList.Contains(a2mP[progress]))
