@@ -260,7 +260,7 @@ namespace ReactionManager2
             return atom;
         }
 
-        public void SolveAllAtomsReaction(int time, bool HBIsIgnored, ref int totalMolNum, ref int totalD4OHNum, ref int totalH2ONum, ref int totalO2Num, ref int totalReactionNum, List<List<List<List<string>>>> totalReaction)
+        public void SolveAllAtomsReaction(int time, bool HBIsIgnored, ref int totalMolNum, ref int totalSpecies, ref int totalD4OHNum, ref int totalH2ONum, ref int totalO2Num, ref int totalReactionNum, List<List<List<List<string>>>> totalReaction, List<Dictionary<string, int>> totalSpeciesDict)
         {
             molNumToString = new List<List<string>>();
             molNumToSmiles = new List<List<string>>();
@@ -416,6 +416,32 @@ namespace ReactionManager2
                 }
             }
             totalMolNum = molNumToSmiles[0].Count;
+            List<string> Smiles = new List<string>(molNumToSmiles[0]);
+            List<int> smilesCount = new();
+            Dictionary<string, int> stringToSmilesCount = new();
+            for (int i=0; i<Smiles.Count; i++)
+            {
+                Smiles[i] = Smiles[i].Replace("#", "");
+                Smiles[i] = Smiles[i].Replace("H", "");
+                if(!smilesCount.Contains(Smiles[i].Count()) && Smiles[i] != "=O")
+                {
+                    smilesCount.Add(Smiles[i].Count());
+                    stringToSmilesCount.Add(Smiles[i],1);
+                }
+                else
+                {
+                    foreach(string key in stringToSmilesCount.Keys)
+                    {
+                        if(Smiles[i].Length == key.Length)
+                        {
+                            stringToSmilesCount[key] += 1;
+                        }
+                    }
+                }
+            }
+            totalSpecies = smilesCount.Count;
+            totalSpeciesDict.Add(stringToSmilesCount);
+
             //それぞれの分子を特定して、数え上げていく
             List<string> molNumToSmiles_copy = new(molNumToSmiles[0]);
             foreach (string smiles in molNumToSmiles_copy)
@@ -551,20 +577,24 @@ namespace ReactionManager2
         public void GetDataPerTime(int molID, int totalTime)
         {
             List<int> totalMolNum = new();
+            List<int> totalSpecies = new();
             List<int> totalD4OHNum = new();
             List<int> totalH2ONum = new();
             List<int> totalO2Num = new();
             List<int> totalReactionNum = new();
             List<List<List<List<string>>>> totalReaction = new();
+            List<Dictionary<string, int>> totalSpeciesDict = new();
             for (int i = 0; i < totalTime - 1; i++)
             {
                 int molNum = 0;
+                int species = 0;
                 int D4OHNum = 0;
                 int H2ONum = 0;
                 int O2Num = 0;
                 int ReactionNum = 0;
-                SolveAllAtomsReaction(i, true, ref molNum, ref D4OHNum, ref H2ONum, ref O2Num, ref ReactionNum, totalReaction);
+                SolveAllAtomsReaction(i, true, ref molNum,ref species, ref D4OHNum, ref H2ONum, ref O2Num, ref ReactionNum, totalReaction, totalSpeciesDict);
                 totalMolNum.Add(molNum);
+                totalSpecies.Add(species);
                 totalD4OHNum.Add(D4OHNum);
                 totalH2ONum.Add(H2ONum);
                 totalO2Num.Add(O2Num);
@@ -611,6 +641,22 @@ namespace ReactionManager2
             for (int i = 0; i < totalTime - 1; i++)
             {
                 File.AppendAllText(@"ReactionData.txt", $"{totalReactionNum[i]}" + Environment.NewLine);
+            }
+
+            File.AppendAllText(@"ReactionData.txt", "Number of Species" + Environment.NewLine);
+            for (int i = 0; i < totalTime - 1; i++)
+            {
+                File.AppendAllText(@"ReactionData.txt", $"{totalSpecies[i]}" + Environment.NewLine);
+            }
+
+            File.AppendAllText(@"ReactionData.txt", "List of Species" + Environment.NewLine);
+            for (int i = 0; i < totalTime - 1; i += totalTime - 2)
+            {
+                File.AppendAllText(@"ReactionData.txt", $"TimeStep{i}" + Environment.NewLine);
+                foreach (KeyValuePair<string, int> smiles in totalSpeciesDict[i])
+                {
+                    File.AppendAllText(@"ReactionData.txt", $"●{smiles.Key}: {smiles.Value}" + Environment.NewLine);
+                }
             }
 
             File.AppendAllText(@"ReactionData.txt", "ReactionPerTime" + Environment.NewLine);
