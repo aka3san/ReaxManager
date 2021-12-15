@@ -81,14 +81,10 @@ namespace ReactionManager2
         public void SolveReaction(List<int> aList, List<int> a2mR, List<int> a2mP, List<List<int>> m2aR, List<List<int>> m2aP,
                                   List<List<int>> reacMList, List<List<int>> prodMList, List<int> molListReac, List<int> molListProd, int progress, List<int> reacProgressList, List<int> prodProgressList, List<bool> isChanged, int time)
         {
-            if (IsListEquall(atomList[time][progress], atomList[time + 1][progress]) || typeToAtom[idToType[progress]] == "H" )
+            if (IsListEquall(atomList[time][progress], atomList[time + 1][progress]) || typeToAtom[idToType[progress]] == "H" || typeToAtom[idToType[progress]] == "O")
             {
                 return;
-            }
-            else if(typeToAtom[idToType[progress]] == "O" )//OからHが取れたorOにHがついただけの反応のとき、早期リターン。
-            {
-                return;
-            }
+            }           
             else
             {
                 isChanged[progress] = true;
@@ -431,16 +427,20 @@ namespace ReactionManager2
             {
                 Smiles[i] = Smiles[i].Replace("#", "");
                 Smiles[i] = Smiles[i].Replace("H", "");
+                string Smiles2 = Smiles[i];
+                Smiles[i] = Smiles[i].Replace("=", "");
+                Smiles[i] = Smiles[i].Replace("(", "");
+                Smiles[i] = Smiles[i].Replace(")", "");
                 if(!smilesCount.Contains(Smiles[i].Count()) && Smiles[i] != "=O")
                 {
                     smilesCount.Add(Smiles[i].Count());
-                    stringToSmilesCount.Add(Smiles[i],1);
+                    stringToSmilesCount.Add(Smiles2,1);
                 }
                 else
                 {
                     foreach(string key in stringToSmilesCount.Keys)
                     {
-                        if(Smiles[i].Length == key.Length)
+                        if(Smiles[i].Length == key.Replace("=","").Replace("(","").Replace(")","").Length)
                         {
                             stringToSmilesCount[key] += 1;
                         }
