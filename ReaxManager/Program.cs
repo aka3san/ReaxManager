@@ -27,7 +27,7 @@ namespace ReactionManager2
         static void Main(string[] args)
         {
             ReactionManager reactionManager = new ReactionManager();
-            reactionManager.FileOpen("bondsO2_short.reaxc", 48208, 252);
+            reactionManager.FileOpen("bondsH2O_short.reaxc", 48228, 252);
             reactionManager.GetDataPerTime(0, 252);
         }
 
@@ -692,7 +692,7 @@ namespace ReactionManager2
                     molFormula += (hCount != 0) ? ("H" + hCount.ToString()) : "";
                     molFormula += (fCount != 0) ? ("F" + fCount.ToString()) : "";
                     molFormula += (oCount != 0) ? ("O" + oCount.ToString()) : "";
-                    File.AppendAllText(@"ReactionData.txt", $"●{smiles.Key}({molFormula}): {smiles.Value}" + Environment.NewLine);
+                    File.AppendAllText(@"ReactionData.txt", $"●{smiles.Key} \"({molFormula})\": {smiles.Value}" + Environment.NewLine);
                 }
             }
 
