@@ -428,11 +428,15 @@ namespace ReactionManager2
             {
                 Smiles[i] = Smiles[i].Replace("#", "");
                 Smiles[i] = Smiles[i].Replace("H", "");
+                if(Smiles[i] == "=O")
+                {
+                    continue;
+                }
                 string Smiles2 = Smiles[i];
                 Smiles[i] = Smiles[i].Replace("=", "");
                 Smiles[i] = Smiles[i].Replace("(", "");
                 Smiles[i] = Smiles[i].Replace(")", "");
-                if(!smilesCount.Contains(Smiles[i].Count()) && Smiles[i] != "=O")
+                if(!smilesCount.Contains(Smiles[i].Count()))
                 {
                     smilesCount.Add(Smiles[i].Count());
                     stringToSmilesCount.Add(Smiles2,1);
@@ -463,15 +467,16 @@ namespace ReactionManager2
                 }
 
                 string smiles2 = smiles.Replace("H", "");
-                smiles2 = smiles2.Replace("#", "");
+                smiles2 = smiles2.Replace("#", "");                
                 smiles2 = smiles2.Replace("(", "");
                 smiles2 = smiles2.Replace(")", "");
+                if (smiles2.Length == 1)
+                {
+                    totalH2ONum += 1;
+                }
                 smiles2 = smiles2.Replace("=", "");
                 switch (smiles2.Length)
-                {
-                    case 1:
-                        totalH2ONum += 1;
-                        break;
+                {                   
                     case 2:
                         totalO2Num += 1;
                         break;
