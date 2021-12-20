@@ -27,7 +27,7 @@ namespace ReactionManager2
         static void Main(string[] args)
         {
             ReactionManager reactionManager = new ReactionManager();
-            reactionManager.FileOpen("bondsH2O_short.reaxc", 48228, 252);
+            reactionManager.FileOpen("bondsO2_short.reaxc", 48208, 252);
             reactionManager.GetDataPerTime(0, 252);
         }
 
