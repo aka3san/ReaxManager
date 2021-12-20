@@ -27,7 +27,7 @@ namespace ReactionManager2
         static void Main(string[] args)
         {
             ReactionManager reactionManager = new ReactionManager();
-            reactionManager.FileOpen("bondsO2_short.reaxc", 48208, 252);
+            reactionManager.FileOpen("bondsH2O_short.reaxc", 48228, 252);
             reactionManager.GetDataPerTime(0, 252);
         }
 
@@ -185,7 +185,7 @@ namespace ReactionManager2
                         {
                             atomChain += "=";
                         }
-                        atomChain += ("#" + atomName + "#");
+                        atomChain += ("[" + atomName + ":1]");
                         continue;
                     }
                 }
@@ -197,7 +197,7 @@ namespace ReactionManager2
                         {
                             atomChain += "=";
                         }
-                        atomChain += ("#" + atomName + "#");
+                        atomChain += ("[" + atomName + ":1]");
                         continue;
                     }
                 }
@@ -408,12 +408,12 @@ namespace ReactionManager2
                     }
                     string smiles_temp = ChangeFromIDToString(molList_temp2, time + i, time, true).Replace("X", "");
                     string smiles_temp2 = ChangeFromIDToString(molList_temp, time + i, time, false);
-                    if (smiles_temp != "" && smiles_temp != "#H#" )
+                    if (smiles_temp != "" && smiles_temp != "[H:1]" )
                     {
                         molNumToSmiles[i].Add(smiles_temp);
                         m2aList[i].Add(molList_temp2);
                     }
-                    if(smiles_temp2 != "H" && smiles_temp2 != "#H#")
+                    if(smiles_temp2 != "H" && smiles_temp2 != "[H:1]")
                     {
                         molNumToString[i].Add(smiles_temp2);
                     }     
@@ -426,7 +426,10 @@ namespace ReactionManager2
             Dictionary<string, string> smilesPlusH = new();
             for (int i=0; i<Smiles.Count; i++)
             {
-                Smiles[i] = Smiles[i].Replace("#", "");
+                Smiles[i] = Smiles[i].Replace("[", "");
+                Smiles[i] = Smiles[i].Replace("]", "");
+                Smiles[i] = Smiles[i].Replace(":", "");
+                Smiles[i] = Smiles[i].Replace("1", "");
                 Smiles[i] = Smiles[i].Replace("H", "");
                 if(Smiles[i] == "=O")
                 {
@@ -467,7 +470,10 @@ namespace ReactionManager2
                 }
 
                 string smiles2 = smiles.Replace("H", "");
-                smiles2 = smiles2.Replace("#", "");                
+                smiles2 = smiles2.Replace("[", "");
+                smiles2 = smiles2.Replace("]", "");
+                smiles2 = smiles2.Replace(":", "");
+                smiles2 = smiles2.Replace("1", "");
                 smiles2 = smiles2.Replace("(", "");
                 smiles2 = smiles2.Replace(")", "");
                 if (smiles2.Length == 1)
