@@ -27,7 +27,7 @@ namespace ReactionManager2
         static void Main(string[] args)
         {
             ReactionManager reactionManager = new ReactionManager();
-            reactionManager.FileOpen("bondsH2OO2_short.reaxc", 48268, 252);
+            reactionManager.FileOpen("bondsH2O_short.reaxc", 48228, 252);
             reactionManager.GetDataPerTime(0, 252);
         }
 
@@ -132,7 +132,7 @@ namespace ReactionManager2
             }
             typeToAtom = new Dictionary<int, string>()
             {   
-                {1,"O"},{2,"O"},{3,"H"},{4,"C"},{5,"C"},{6,"O"},{7,"C"},{8,"O"},
+                {1,"O"},{2,"H"},{3,"O"},{4,"C"},{5,"C"},{6,"O"},{7,"C"},{8,"O"},
                 {9,"F"},{10,"H"},{11,"H"},{12,"_C_"},{13,"_C_"},{14,"_C_"},{15,"H"},{16,"_C_"},{17,"_C_"},{18,"_C_"},{19, "_C_"}, {20, "H"}, {21, "_C_"}
             };
 
@@ -672,9 +672,14 @@ namespace ReactionManager2
                 File.AppendAllText(@"ReactionData.txt", $"{totalSpecies[i]}" + Environment.NewLine);
             }
 
+
+            List<int> polymolCountPerTime = new List<int>();
             File.AppendAllText(@"ReactionData.txt", "List of Species" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i += totalTime - 2)
+            for (int i = 0; i < totalTime - 1; i++)
             {
+                //重合した分子の数
+                int polymolCount = 0;
+
                 File.AppendAllText(@"ReactionData.txt", $"TimeStep{i}" + Environment.NewLine);
                 foreach (KeyValuePair<string, int> smiles in totalSpeciesDict[i])
                 {
@@ -699,12 +704,26 @@ namespace ReactionManager2
                                 break;
                         }
                     }
+                    if(cCount > 37)
+                    {
+                        polymolCount++;
+                    }
                     molFormula += (cCount != 0) ? ("C" + cCount.ToString()) : "";
                     molFormula += (hCount != 0) ? ("H" + hCount.ToString()) : "";
                     molFormula += (fCount != 0) ? ("F" + fCount.ToString()) : "";
                     molFormula += (oCount != 0) ? ("O" + oCount.ToString()) : "";
-                    File.AppendAllText(@"ReactionData.txt", $"●{smiles.Key} \"({molFormula})\": {smiles.Value}" + Environment.NewLine);
+                    if(i == 0 || i== totalTime-2)
+                    {
+                        File.AppendAllText(@"ReactionData.txt", $"●{smiles.Key} \"({molFormula})\": {smiles.Value}" + Environment.NewLine);
+                    }                   
                 }
+                polymolCountPerTime.Add(polymolCount);             
+            }
+
+            File.AppendAllText(@"ReactionData.txt", $"●重合した分子の数" + Environment.NewLine);
+            for (int i=0; i<totalTime-1; i++)
+            {
+                File.AppendAllText(@"ReactionData.txt", $"{polymolCountPerTime[i]}" + Environment.NewLine);
             }
 
             File.AppendAllText(@"ReactionData.txt", "ReactionPerTime" + Environment.NewLine);
