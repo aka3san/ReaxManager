@@ -25,14 +25,14 @@ namespace ReactionManager2
         }
 
         static void Main(string[] args)
-        {
+        {           
             ReactionManager reactionManager = new ReactionManager();
-            reactionManager.FileOpen("bondsH2O_short.reaxc", 48228, 252);
+            reactionManager.FileOpen("bondsH2OO2_short.reaxc", 48268, 252);
             reactionManager.GetDataPerTime(0, 252);
         }
 
 
-        public void A2mList(List<int> aList, List<int> a2m, List<List<int>> m2a, List<List<int>> mList, List<int> molNumList, List<int> xAList, List<int> progressList)
+        void A2mList(List<int> aList, List<int> a2m, List<List<int>> m2a, List<List<int>> mList, List<int> molNumList, List<int> xAList, List<int> progressList)
         {
             mList.Clear();
             xAList.Clear();
@@ -78,8 +78,8 @@ namespace ReactionManager2
             }
         }
 
-        public void SolveReaction(List<int> aList, List<int> a2mR, List<int> a2mP, List<List<int>> m2aR, List<List<int>> m2aP,
-                                  List<List<int>> reacMList, List<List<int>> prodMList, List<int> molListReac, List<int> molListProd, int progress, List<int> reacProgressList, List<int> prodProgressList, List<bool> isChanged, int time)
+        void SolveReaction(List<int> aList, List<int> a2mR, List<int> a2mP, List<List<int>> m2aR, List<List<int>> m2aP,
+                                    List<List<int>> reacMList, List<List<int>> prodMList, List<int> molListReac, List<int> molListProd, int progress, List<int> reacProgressList, List<int> prodProgressList, List<bool> isChanged, int time)
         {
             if (IsListEquall(atomList[time][progress], atomList[time + 1][progress]) || typeToAtom[idToType[progress]] == "H" || typeToAtom[idToType[progress]] == "O")
             {
@@ -132,7 +132,7 @@ namespace ReactionManager2
             }
             typeToAtom = new Dictionary<int, string>()
             {   
-                {1,"O"},{2,"H"},{3,"O"},{4,"C"},{5,"C"},{6,"O"},{7,"C"},{8,"O"},
+                {1,"O"},{2,"O"},{3,"H"},{4,"C"},{5,"C"},{6,"O"},{7,"C"},{8,"O"},
                 {9,"F"},{10,"H"},{11,"H"},{12,"_C_"},{13,"_C_"},{14,"_C_"},{15,"H"},{16,"_C_"},{17,"_C_"},{18,"_C_"},{19, "_C_"}, {20, "H"}, {21, "_C_"}
             };
 
