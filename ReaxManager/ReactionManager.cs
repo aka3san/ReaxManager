@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace ReactionManager2
+namespace ReaxManager
 {
     class ReactionManager
     {
@@ -25,10 +25,13 @@ namespace ReactionManager2
         }
 
         static void Main(string[] args)
-        {           
+        { 
+            /*
             ReactionManager reactionManager = new ReactionManager();
             reactionManager.FileOpen("bondsH2OO2_short.reaxc", 48268, 252);
             reactionManager.GetDataPerTime(0, 252);
+            */
+            
         }
 
 
