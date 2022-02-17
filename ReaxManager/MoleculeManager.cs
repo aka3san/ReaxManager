@@ -141,6 +141,21 @@ namespace ReaxManager
                     }                   
                 }
             }
+
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < m2aList[i].Count; j++)
+                {
+                    foreach (int a in m2aList[i][j])
+                    {
+                        if (a < 0 || a >= 50000)
+                        {
+                            continue;
+                        }
+                        a2mList[i][a - 1] = j + 1;
+                    }
+                }
+            }
         }
 
         public string ChangeFromIDToString(List<int> aList, int timeStep, int targetTime,  bool hIgnored)
