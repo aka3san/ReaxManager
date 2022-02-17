@@ -14,6 +14,8 @@ namespace ReaxManager
         public List<List<List<int>>> M2aList => m2aList;
         private  List<List<string>> molNumToSmiles;
         public List<List<string>> MolNumToSmiles => molNumToSmiles;
+        private List<List<string>> molNumToString;
+        public List<List<string>> MolNumToString => molNumToString;
 
         private AtomInputData atomInputData;
 
@@ -106,6 +108,7 @@ namespace ReaxManager
                                 }
                             }
 
+
                             if (chainCount == 0)
                             {
                                 /*
@@ -129,6 +132,8 @@ namespace ReaxManager
                                 molList_temp2.InsertRange(molList_temp2.IndexOf(atom) + 2, chainedList);
                                 molList_temp2.Insert(molList_temp2.IndexOf(atom) + 2 + chainedList.Count, 50000 + atom);
                             }
+
+
                         }
                         chainCount++;
                     }
@@ -141,6 +146,7 @@ namespace ReaxManager
                     }                   
                 }
             }
+
 
             for (int i = 0; i < 2; i++)
             {
