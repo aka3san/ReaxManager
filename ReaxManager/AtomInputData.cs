@@ -19,12 +19,14 @@ namespace ReaxManager
         public List<int> IdToType => idToType;
         private Dictionary<int, string> typeToAtom;
         public Dictionary<int,string> TypeToAtom => typeToAtom;
+        private List<string> targetMoleculeSmilesList;
+        public List<string> TargetMoleculeSmilesList => TargetMoleculeSmilesList;
 
-        public AtomInputData(string filePath, int atomNum, int timeStep, Dictionary<int, string> typeToAtom)
+        public AtomInputData(string filePath, int atomNum, int timeStep, Dictionary<int, string> typeToAtom, List<string> targetMoleculeSmilesList)
         {
             this.totalTimeStep = timeStep;
             this.atomList = new List<List<List<int>>>();
-            Console.WriteLine(this.atomList.Count);
+            this.targetMoleculeSmilesList = targetMoleculeSmilesList;
             for (int i = 0; i < timeStep; i++)
             {
                 this.atomList.Add(new List<List<int>>());
@@ -61,18 +63,18 @@ namespace ReaxManager
                 }
                 this.idToType[atomID - 1] = int.Parse(line[2]);
             }
-            this.totalatomNum = this.atomList[0].Count;
+            this.totalAtomNum = this.atomList[0].Count;
         }
 
         public void IgnoreHydrogenBond()
         {
-            for (int i = time; i <= time + 1; i++)
+            for (int i = 0; i <= totalTimeStep + 1; i++)
             {
                 for (int j = 0; j < atomList[i].Count; j++)
                 {
                     if ((typeToAtom[idToType[j]] == "H" || typeToAtom[idToType[j]] == "F") && atomList[i][j].Count >= 2)
                     {
-                        int mostChainedID = FindMostChainedAtom(j + 1, atomList[i], i, false);
+                        int mostChainedID = GetMostChainedAtom(i, j + 1);
                         for (int k = 0; k < atomList[i][j].Count; k++)
                         {
                             if (atomList[i][j][k] == mostChainedID)
@@ -89,12 +91,12 @@ namespace ReaxManager
 
         public int GetMostChainedAtom(int timeStep, int atomID)
         {
-            if (this.atomList[atomID - 1] == null)
+            if (this.atomList[timeStep][atomID - 1] == null)
             {
                 return -1;//結合している全ての原子を列挙済み
             }
-            int atom = this.atomList[atomID - 1][0];
-            foreach (int _atom in this.atomList[atomID - 1])
+            int atom = this.atomList[timeStep][atomID - 1][0];
+            foreach (int _atom in this.atomList[timeStep][atomID - 1])
             {
                 if (this.atomList[timeStep][_atom - 1].Count > this.atomList[timeStep][atom - 1].Count)
                 {
@@ -110,7 +112,7 @@ namespace ReaxManager
             {
                 return -1;//結合している全ての原子を列挙済み
             }
-            int atom = GetMostChainedAtom(timeStep, atomID)
+            int atom = GetMostChainedAtom(timeStep, atomID);
             atomList_copy[atomID - 1].Remove(atom);
             atomList_copy[atom - 1].Remove(atomID);
             if (atomList_copy[atomID - 1].Count == 0)

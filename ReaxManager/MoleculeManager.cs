@@ -27,6 +27,11 @@ namespace ReaxManager
             {
                 molNumToSmiles.Add(new List<string>());
             }
+            molNumToString = new List<List<string>>();
+            for (int i = 0; i < 2; i++)
+            {
+                molNumToString.Add(new List<string>());
+            }
             m2aList = new List<List<List<int>>>();
             for (int i = 0; i < 2; i++)
             {
@@ -41,14 +46,14 @@ namespace ReaxManager
                     a2mList[i].Add(0);
                 }
             }
-                        
+
             for (int i = 0; i < 2; i++)
             {
                 int j = 0;
                 List<List<int>> atomList_copy = new List<List<int>>(atomInputData.AtomList[i]);
                 for (int k = 0; k < atomInputData.AtomList[time + i].Count; k++)
                 {
-                    atomList_copy[k] = new List<int>(atomInputData.AtomList[time+i][k]);
+                    atomList_copy[k] = new List<int>(atomInputData.AtomList[time + i][k]);
                     if (atomList_copy[k].Count == 0 || atomInputData.TypeToAtom[atomInputData.IdToType[k]] == "_C_")
                     {
                         atomList_copy[k] = null;
@@ -111,19 +116,17 @@ namespace ReaxManager
 
                             if (chainCount == 0)
                             {
-                                /*
+
                                 molList_temp.InsertRange(molList_temp.IndexOf(atom) + 1, chainedList);
-                                chainedList.RemoveAll(item => typeToAtom[idToType[item - 1]] == "H");
-                                */
+                                chainedList.RemoveAll(item => atomInputData.TypeToAtom[atomInputData.IdToType[item - 1]] == "H");
                                 molList_temp2.InsertRange(molList_temp2.IndexOf(atom) + 1, chainedList);
                             }
                             else if (chainCount != 0 && chainedList.Count != 0)
                             {
-                                /*
+
                                 molList_temp.Insert(molList_temp.IndexOf(atom) + 1, -1 * atom);
                                 molList_temp.InsertRange(molList_temp.IndexOf(atom) + 2, chainedList);
                                 molList_temp.Insert(molList_temp.IndexOf(atom) + 2 + chainedList.Count, 50000 + atom);
-                                */
                                 if (chainedList.Count == 1 && atomInputData.TypeToAtom[atomInputData.IdToType[chainedList[0] - 1]] == "H")
                                 {
                                     continue;
@@ -138,15 +141,18 @@ namespace ReaxManager
                         chainCount++;
                     }
                     string smiles_temp = ChangeFromIDToString(molList_temp2, time + i, time, true).Replace("X", "");
-
+                    string smiles_temp2 = ChangeFromIDToString(molList_temp, time + i, time, false);
                     if (smiles_temp != "" && smiles_temp != "[H:1]")
                     {
                         molNumToSmiles[i].Add(smiles_temp);
                         m2aList[i].Add(molList_temp2);
-                    }                   
+                    }
+                    if (smiles_temp2 != "H" && smiles_temp2 != "[H:1]")
+                    {
+                        molNumToString[i].Add(smiles_temp2);
+                    }
                 }
             }
-
 
             for (int i = 0; i < 2; i++)
             {
@@ -219,7 +225,7 @@ namespace ReaxManager
             return atomChain;
         }
 
-        private bool IsListEquall(List<int> a, List<int> b)
+        static public bool IsListEquall(List<int> a, List<int> b)
         {
             if (a.Count != b.Count)
             {

@@ -37,7 +37,7 @@ namespace ReaxManager
                 {
                     continue;
                 }
-                if(typeToAtom[idToType[aList[i]-1]] == "H")
+                if(atomInputData.TypeToAtom[atomInputData.IdToType[aList[i]-1]] == "H")
                 {
                     continue;
                 }
@@ -71,10 +71,10 @@ namespace ReaxManager
             }
         }
 
-        void SolveReaction(List<int> aList, List<int> a2mR, List<int> a2mP, List<List<int>> m2aR, List<List<int>> m2aP,
-                                    List<List<int>> reacMList, List<List<int>> prodMList, List<int> molListReac, List<int> molListProd, int progress, List<int> reacProgressList, List<int> prodProgressList, List<bool> isChanged, int time)
+        void SolveReaction(List<int> aList, MoleculeManager moleculeManager, List<List<int>> reacMList, List<List<int>> prodMList, List<int> molListReac, List<int> molListProd,
+                           int progress, List<int> reacProgressList, List<int> prodProgressList, List<bool> isChanged, int time)
         {
-            if (IsListEquall(atomList[time][progress], atomList[time + 1][progress]) || typeToAtom[idToType[progress]] == "H" || typeToAtom[idToType[progress]] == "O")
+            if (MoleculeManager.IsListEquall(atomInputData.AtomList[time][progress], atomInputData.AtomList[time + 1][progress]) || atomInputData.TypeToAtom[atomInputData.IdToType[progress]] == "H" || atomInputData.TypeToAtom[atomInputData.IdToType[progress]] == "O")
             {
                 return;
             }           
@@ -83,7 +83,7 @@ namespace ReaxManager
                 isChanged[progress] = true;
             }
 
-            if (reacProgressList.Contains(a2mR[progress]) || prodProgressList.Contains(a2mP[progress]))
+            if (reacProgressList.Contains(moleculeManager.A2mList[0][progress]) || prodProgressList.Contains(moleculeManager.A2mList[1][progress]))
             {
                 reacMList.Add(new List<int>() { 0 });
                 prodMList.Add(new List<int>() { 0 });
@@ -99,8 +99,8 @@ namespace ReaxManager
             while (list1.Count != list3.Count)
             {
                 list1 = new List<int>(list3);
-                A2mList(list1, a2mP, m2aP, prodMList, molListProd, list2, prodProgressList);
-                A2mList(list2, a2mR, m2aR, reacMList, molListReac, list3, reacProgressList);
+                A2mList(list1, moleculeManager.A2mList[1], moleculeManager.M2aList[1], prodMList, molListProd, list2, prodProgressList);
+                A2mList(list2, moleculeManager.A2mList[0], moleculeManager.M2aList[0], reacMList, molListReac, list3, reacProgressList);
                 list2.Clear();
             }
             //Console.WriteLine($"進行度: {progress}/{ 48168}");
@@ -114,114 +114,33 @@ namespace ReaxManager
 
         
 
-        public void SolveAllAtomsReaction(int time, bool HBIsIgnored, ref int totalMolNum, ref int totalSpecies, ref int totalD4OHNum, ref int totalH2ONum, ref int totalO2Num, ref int totalReactionNum, List<List<List<List<string>>>> totalReaction, List<Dictionary<string, int>> totalSpeciesDict, List<Dictionary<string,string>> totalSmilesPlusH)
+        public void SolveAllAtomsReaction(int time, bool HBIsIgnored, ref int totalMolNum, ref int totalSpecies, List<List<int>> totalTargetMoleculeNum, List<string> targetMoleculeSmilesList, ref int totalReactionNum, List<List<List<List<string>>>> totalReaction, List<Dictionary<string, int>> totalSpeciesDict, List<Dictionary<string,string>> totalSmilesPlusH)
         {
 
             MoleculeManager moleculeManager = new MoleculeManager(atomInputData, time);
             totalMolNum = moleculeManager.MolNumToSmiles[0].Count;
-            List<string> Smiles = new List<string>(moleculeManager.MolNumToSmiles[0]);
-            List<int> smilesCount = new();
-            Dictionary<string, int> stringToSmilesCount = new();
+
+            SortSmiles sortSmiles = new SortSmiles(moleculeManager.MolNumToSmiles[0], moleculeManager.MolNumToString[0]);
+            Dictionary<string, int> stringToSpeciesNum = new();
             Dictionary<string, string> smilesPlusH = new();
-            for (int i=0; i<Smiles.Count; i++)
-            {
-                Smiles[i] = Smiles[i].Replace("[", "");
-                Smiles[i] = Smiles[i].Replace("]", "");
-                Smiles[i] = Smiles[i].Replace(":", "");
-                Smiles[i] = Smiles[i].Replace("1", "");
-                Smiles[i] = Smiles[i].Replace("H", "");
-                if(Smiles[i] == "=O")
-                {
-                    continue;
-                }
-                string Smiles2 = Smiles[i];
-                Smiles[i] = Smiles[i].Replace("=", "");
-                Smiles[i] = Smiles[i].Replace("(", "");
-                Smiles[i] = Smiles[i].Replace(")", "");
-                if(!smilesCount.Contains(Smiles[i].Count()))
-                {
-                    smilesCount.Add(Smiles[i].Count());
-                    stringToSmilesCount.Add(Smiles2,1);
-                    smilesPlusH.Add(Smiles2, molNumToString[0][i]);
-                }
-                else
-                {
-                    foreach(string key in stringToSmilesCount.Keys)
-                    {
-                        if(Smiles[i].Length == key.Replace("=","").Replace("(","").Replace(")","").Length)
-                        {
-                            stringToSmilesCount[key] += 1;
-                        }
-                    }
-                }
-            }
-            totalSpecies = smilesCount.Count;
-            totalSpeciesDict.Add(stringToSmilesCount);
+            sortSmiles.SortSpecies(ref totalSpecies, stringToSpeciesNum, smilesPlusH);            
+            totalSpeciesDict.Add(stringToSpeciesNum);
             totalSmilesPlusH.Add(smilesPlusH);
 
-            //それぞれの分子を特定して、数え上げていく
-            List<string> molNumToSmiles_copy = new(molNumToSmiles[0]);
-            foreach (string smiles in molNumToSmiles_copy)
-            {
-                if (smiles.Length > 1000)
-                {
-                    continue;
-                }
+            List<int> targetMoleculerNum = sortSmiles.CountTargetMoleculeNumbers(targetMoleculeSmilesList);
+            totalTargetMoleculeNum.Add(targetMoleculerNum);
+            
 
-                string smiles2 = smiles.Replace("H", "");
-                smiles2 = smiles2.Replace("[", "");
-                smiles2 = smiles2.Replace("]", "");
-                smiles2 = smiles2.Replace(":", "");
-                smiles2 = smiles2.Replace("1", "");
-                smiles2 = smiles2.Replace("(", "");
-                smiles2 = smiles2.Replace(")", "");
-                if (smiles2.Length == 1)
-                {
-                    totalH2ONum += 1;
-                }
-                smiles2 = smiles2.Replace("=", "");
-                switch (smiles2.Length)
-                {                   
-                    case 2:
-                        totalO2Num += 1;
-                        break;
-                    case 111:
-                        totalD4OHNum += 1;
-                        break;
-                    case 113:
-                        totalD4OHNum += 1;
-                        break;
-
-                }
-                if (smiles2.Length % 111 == 0 && smiles2.Length > 111)
-                {
-                    totalD4OHNum += smiles2.Length / 111 - 1;
-                }
-            }
-
-            for (int i = 0; i < 2; i++)
-            {
-                for (int j = 0; j < m2aList[i].Count; j++)
-                {
-                    foreach (int a in m2aList[i][j])
-                    {
-                        if (a < 0 || a >= 50000)
-                        {
-                            continue;
-                        }
-                        a2mList[i][a - 1] = j + 1;
-                    }
-                }
-            }
+            //反応解析↓
             List<bool> IsChanged = new();
-            for (int i = 0; i < atomList[0].Count; i++)
+            for (int i = 0; i < atomInputData.TotalAtomNum; i++)
             {
                 IsChanged.Add(false);
             }
             List<int> reacProgressList = new List<int>();
             List<int> prodProgressList = new List<int>();
-            List<List<List<List<int>>>> reac_prod_List = new List<List<List<List<int>>>>(atomList[0].Count);
-            for (int i = 0; i < atomList[0].Count; i++)
+            List<List<List<List<int>>>> reac_prod_List = new List<List<List<List<int>>>>(atomInputData.TotalAtomNum);
+            for (int i = 0; i < atomInputData.TotalAtomNum; i++)
             {
                 reac_prod_List.Add(new List<List<List<int>>>());
                 for (int j = 0; j < 2; j++)
@@ -229,8 +148,8 @@ namespace ReaxManager
                     reac_prod_List[i].Add(new List<List<int>>());
                 }
             }
-            List<List<List<List<string>>>> reac_prod_List_str = new List<List<List<List<string>>>>(atomList[0].Count);
-            for (int i = 0; i < atomList[0].Count; i++)
+            List<List<List<List<string>>>> reac_prod_List_str = new List<List<List<List<string>>>>(atomInputData.TotalAtomNum);
+            for (int i = 0; i < atomInputData.TotalAtomNum; i++)
             {
                 reac_prod_List_str.Add(new List<List<List<string>>>());
                 for (int j = 0; j < 2; j++)
@@ -239,7 +158,7 @@ namespace ReaxManager
                 }
             }
             List<List<List<string>>> reac_prod_StringList = new();
-            for (int i = 0; i < atomList[0].Count; i++)
+            for (int i = 0; i < atomInputData.TotalAtomNum; i++)
             {
                 reac_prod_StringList.Add(new List<List<string>>());
                 for (int j = 0; j < 2; j++)
@@ -247,22 +166,22 @@ namespace ReaxManager
                     reac_prod_StringList[i].Add(new List<string>());
                 }
             }
-            List<List<int>> reacMList = new List<List<int>>(atomList[0].Count);
-            for (int i = 0; i < atomList[0].Count; i++)
+            List<List<int>> reacMList = new List<List<int>>(atomInputData.TotalAtomNum);
+            for (int i = 0; i < atomInputData.TotalAtomNum; i++)
             {
                 reacMList.Add(new List<int>());
             }
-            List<List<int>> prodMList = new List<List<int>>(atomList[0].Count);
-            for (int i = 0; i < atomList[0].Count; i++)
+            List<List<int>> prodMList = new List<List<int>>(atomInputData.TotalAtomNum);
+            for (int i = 0; i < atomInputData.TotalAtomNum; i++)
             {
                 prodMList.Add(new List<int>());
             }
-            List<List<int>> atomList2 = new List<List<int>>(atomList[time]);
+            List<List<int>> atomList2 = new List<List<int>>(atomInputData.TotalAtomNum);
 
-            for (int i = 0; i < atomList[time].Count; i++)
+            for (int i = 0; i < atomInputData.TotalAtomNum; i++)
             {
-                SolveReaction(atomList[time][i], a2mList[0], a2mList[1], m2aList[0], m2aList[1],
-                              reac_prod_List[i][0], reac_prod_List[i][1], reacMList[i], prodMList[i], i, reacProgressList, prodProgressList, IsChanged, time);
+                SolveReaction(atomInputData.AtomList[time][i], moleculeManager, reac_prod_List[i][0], reac_prod_List[i][1], reacMList[i], prodMList[i],
+                              i, reacProgressList, prodProgressList, IsChanged, time);
                 if (reacMList[i].Count != 0 && IsChanged[i])
                 {
                     foreach (int molNum in reacMList[i])
@@ -271,7 +190,7 @@ namespace ReaxManager
                         {
                             continue;
                         }
-                        string molStr = molNumToSmiles[0][molNum - 1];
+                        string molStr = moleculeManager.MolNumToSmiles[0][molNum - 1];
                         reac_prod_StringList[i][0].Add(molStr);
                     }
                     foreach (int molNum in prodMList[i])
@@ -280,7 +199,7 @@ namespace ReaxManager
                         {
                             continue;
                         }
-                        string molStr = molNumToSmiles[1][molNum - 1];
+                        string molStr = moleculeManager.MolNumToSmiles[1][molNum - 1];
                         reac_prod_StringList[i][1].Add(molStr);
                     }
                 }
@@ -291,166 +210,33 @@ namespace ReaxManager
             }
             reac_prod_StringList.RemoveAll(item => item[0][0] == "None");
             totalReactionNum = reac_prod_StringList.Count;
-            totalReaction.Add(reac_prod_StringList);
-            Console.WriteLine($"reac_prod_StringList.Count: {reac_prod_StringList.Count}");
+            totalReaction.Add(reac_prod_StringList);            
         }
 
         public void GetDataPerTime(int molID, int totalTime)
         {
             List<int> totalMolNum = new();
             List<int> totalSpecies = new();
-            List<int> totalD4OHNum = new();
-            List<int> totalH2ONum = new();
-            List<int> totalO2Num = new();
-            List<int> totalReactionNum = new();
+            List<List<int>> totalTargetMoleculeNum = new();
+            List<int> totalReactionNum = new(); 
             List<List<List<List<string>>>> totalReaction = new();
             List<Dictionary<string, int>> totalSpeciesDict = new();
             List<Dictionary<string, string>> totalSmilesPlusH = new();
             for (int i = 0; i < totalTime - 1; i++)
             {
                 int molNum = 0;
-                int species = 0;
-                int D4OHNum = 0;
-                int H2ONum = 0;
-                int O2Num = 0;
+                int species = 0;                
                 int ReactionNum = 0;
-                SolveAllAtomsReaction(i, true, ref molNum,ref species, ref D4OHNum, ref H2ONum, ref O2Num, ref ReactionNum, totalReaction, totalSpeciesDict, totalSmilesPlusH);
+                SolveAllAtomsReaction(i, true, ref molNum,ref species, totalTargetMoleculeNum, atomInputData.TargetMoleculeSmilesList, ref ReactionNum, totalReaction, totalSpeciesDict, totalSmilesPlusH);
                 totalMolNum.Add(molNum);
-                totalSpecies.Add(species);
-                totalD4OHNum.Add(D4OHNum);
-                totalH2ONum.Add(H2ONum);
-                totalO2Num.Add(O2Num);
+                totalSpecies.Add(species);               
                 totalReactionNum.Add(ReactionNum);
                 Console.WriteLine($"進行度: {i + 1}/{totalTime}");
             }            
             Console.WriteLine("テキストファイルが出力されました。");
 
             //テキストファイルに出力
-            try
-            {
-                File.WriteAllText(@"ReactionData.txt", "Reaction Data" + Environment.NewLine);
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            File.AppendAllText(@"ReactionData.txt", "Number of Molecules" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"{totalMolNum[i]}" + Environment.NewLine);
-            }
-
-            File.AppendAllText(@"ReactionData.txt", "Number of D4OH" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"{totalD4OHNum[i]}" + Environment.NewLine);
-            }
-
-            File.AppendAllText(@"ReactionData.txt", "Number of H2O" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"{totalH2ONum[i]}" + Environment.NewLine);
-            }
-
-            File.AppendAllText(@"ReactionData.txt", "Number of O2" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"{totalO2Num[i]}" + Environment.NewLine);
-            }
-
-            File.AppendAllText(@"ReactionData.txt", "Number of Reaction" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"{totalReactionNum[i]}" + Environment.NewLine);
-            }
-
-            File.AppendAllText(@"ReactionData.txt", "Number of Species" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"{totalSpecies[i]}" + Environment.NewLine);
-            }
-
-
-            List<int> polymolCountPerTime = new List<int>();
-            File.AppendAllText(@"ReactionData.txt", "List of Species" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                //重合した分子の数
-                int polymolCount = 0;
-
-                File.AppendAllText(@"ReactionData.txt", $"TimeStep{i}" + Environment.NewLine);
-                foreach (KeyValuePair<string, int> smiles in totalSpeciesDict[i])
-                {
-                    string molFormula = "";
-                    int cCount, hCount, fCount, oCount;
-                    cCount = 0; hCount = 0; fCount = 0; oCount = 0;
-                    foreach(char atomName in totalSmilesPlusH[i][smiles.Key])
-                    {
-                        switch(atomName)
-                        {
-                            case 'C':
-                                cCount++;
-                                break;
-                            case 'H':
-                                hCount++;
-                                break;
-                            case 'F':
-                                fCount++;
-                                break;
-                            case 'O':
-                                oCount++;
-                                break;
-                        }
-                    }
-                    if(cCount > 37)
-                    {
-                        polymolCount++;
-                    }
-                    molFormula += (cCount != 0) ? ("C" + cCount.ToString()) : "";
-                    molFormula += (hCount != 0) ? ("H" + hCount.ToString()) : "";
-                    molFormula += (fCount != 0) ? ("F" + fCount.ToString()) : "";
-                    molFormula += (oCount != 0) ? ("O" + oCount.ToString()) : "";
-                    if(i == 0 || i== totalTime-2)
-                    {
-                        File.AppendAllText(@"ReactionData.txt", $"●{smiles.Key} \"({molFormula})\": {smiles.Value}" + Environment.NewLine);
-                    }                   
-                }
-                polymolCountPerTime.Add(polymolCount);             
-            }
-
-            File.AppendAllText(@"ReactionData.txt", $"●重合した分子の数" + Environment.NewLine);
-            for (int i=0; i<totalTime-1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"{polymolCountPerTime[i]}" + Environment.NewLine);
-            }
-
-            File.AppendAllText(@"ReactionData.txt", "ReactionPerTime" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"TimeStep{i}" + Environment.NewLine);
-                for(int i2=0; i2<totalReaction[i].Count; i2++)
-                {
-                    File.AppendAllText(@"ReactionData.txt", $"------反応{i2+1}------" + Environment.NewLine);
-                    for(int j=0; j<totalReaction[i][i2].Count; j++)
-                    {
-                        for(int k=0; k<totalReaction[i][i2][j].Count; k++)
-                        {
-                            File.AppendAllText(@"ReactionData.txt", $"{totalReaction[i][i2][j][k]}" + Environment.NewLine);
-                            if(k == totalReaction[i][i2][j].Count-1)
-                            {
-                                break;
-                            }
-                            File.AppendAllText(@"ReactionData.txt", "+" + Environment.NewLine);
-                        }
-                        if(j==0)
-                        {
-                            File.AppendAllText(@"ReactionData.txt", "--↓↓--" + Environment.NewLine);
-                        }                       
-                    }
-                    File.AppendAllText(@"ReactionData.txt", "------------" + Environment.NewLine);
-                }
-            }
+            
         }
     }
 }
