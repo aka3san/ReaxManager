@@ -6,7 +6,7 @@ namespace ReaxManager
     {
         public Main()
         {
-            static void main()
+            static void Main()
             {
                 //タイプから原子の文字に変換するmap
                 Dictionary<int, string> typeToAtom = new Dictionary<int, string>()
@@ -24,14 +24,17 @@ namespace ReaxManager
                     /*酸素*/ "O=O"
                 };
 
-                //この変数にインプット情報が格納されます。引数は左から順に、FilePath、総原子数(基盤も含める), 総タイムステップ数, typeから原子に変換するmap, 対象分子リスト
+                //この変数にインプット情報が格納されます。引数は左から順に、FilePath、総原子数(基盤も含める), 総タイムステップ数, typeから原子に変換するmap, 対象分子のリスト
                 AtomInputData atomInputData = new AtomInputData("bondsH2OO2_short.reaxc", 48268, 252, typeToAtom, targetMoleculeSmilesList);
+
+                //水素結合を無視する場合
+                atomInputData.IgnoreHydrogenBond();
 
                 //必要な情報を格納
                 ReactionManager reactionManager = new ReactionManager(atomInputData);
 
                 //テキストファイルに出力
-                reactionManager.GetDataPerTime();
+                reactionManager.GetTextFileData();
             }
         }
     }

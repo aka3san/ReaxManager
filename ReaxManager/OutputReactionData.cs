@@ -58,15 +58,10 @@ namespace ReaxManager
             {
                 File.AppendAllText(@"ReactionData.txt", $"{totalSpecies[i]}" + Environment.NewLine);
             }
-
-
-            List<int> polymolCountPerTime = new List<int>();
+           
             File.AppendAllText(@"ReactionData.txt", "List of Species" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                //重合した分子の数
-                int polymolCount = 0;
-
+            for (int i = 0; i < atomInputData.TotalTimeStep - 1; i += atomInputData.TotalTimeStep-2)
+            {                
                 File.AppendAllText(@"ReactionData.txt", $"TimeStep{i}" + Environment.NewLine);
                 foreach (KeyValuePair<string, int> smiles in totalSpeciesDict[i])
                 {
@@ -88,33 +83,22 @@ namespace ReaxManager
                                 break;
                             case 'O':
                                 oCount++;
-                                break;
+                                break;                            
                         }
-                    }
-                    if (cCount > 37)
-                    {
-                        polymolCount++;
-                    }
+                    }                    
                     molFormula += (cCount != 0) ? ("C" + cCount.ToString()) : "";
                     molFormula += (hCount != 0) ? ("H" + hCount.ToString()) : "";
                     molFormula += (fCount != 0) ? ("F" + fCount.ToString()) : "";
                     molFormula += (oCount != 0) ? ("O" + oCount.ToString()) : "";
-                    if (i == 0 || i == totalTime - 2)
+                    if (i == 0 || i == atomInputData.TotalTimeStep - 2)
                     {
                         File.AppendAllText(@"ReactionData.txt", $"●{smiles.Key} \"({molFormula})\": {smiles.Value}" + Environment.NewLine);
                     }
-                }
-                polymolCountPerTime.Add(polymolCount);
-            }
-
-            File.AppendAllText(@"ReactionData.txt", $"●重合した分子の数" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"{polymolCountPerTime[i]}" + Environment.NewLine);
-            }
+                }               
+            }          
 
             File.AppendAllText(@"ReactionData.txt", "ReactionPerTime" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
+            for (int i = 0; i < atomInputData.TotalTimeStep - 1; i++)
             {
                 File.AppendAllText(@"ReactionData.txt", $"TimeStep{i}" + Environment.NewLine);
                 for (int i2 = 0; i2 < totalReaction[i].Count; i2++)

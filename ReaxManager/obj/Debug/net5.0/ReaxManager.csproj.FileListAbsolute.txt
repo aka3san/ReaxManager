@@ -29,3 +29,11 @@ C:/Users/inayoshi/Downloads/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager
 C:/Users/inayoshi/Downloads/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager.genruntimeconfig.cache
 C:/Users/inayoshi/Downloads/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager.csproj.AssemblyReference.cache
 /Users/inayoshikouya/Projects/ReaxManager/ReaxManager/obj/Debug/net5.0/ReaxManager.csproj.AssemblyReference.cache
+C:\Users\inayoshi\Downloads\ReaxManager\ReaxManager\obj\Debug\net5.0\ReaxManager.csproj.AssemblyReference.cache
+C:\Users\inayoshi\Downloads\ReaxManager\ReaxManager\obj\Debug\net5.0\ReaxManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\inayoshi\Downloads\ReaxManager\ReaxManager\obj\Debug\net5.0\ReaxManager.AssemblyInfoInputs.cache
+C:\Users\inayoshi\Downloads\ReaxManager\ReaxManager\obj\Debug\net5.0\ReaxManager.AssemblyInfo.cs
+C:\Users\inayoshi\Downloads\ReaxManager\ReaxManager\obj\Debug\net5.0\ReaxManager.csproj.CoreCompileInputs.cache
+C:\Users\inayoshi\Downloads\ReaxManager\ReaxManager\obj\Debug\net5.0\ReaxManager.dll
+C:\Users\inayoshi\Downloads\ReaxManager\ReaxManager\obj\Debug\net5.0\ref\ReaxManager.dll
+C:\Users\inayoshi\Downloads\ReaxManager\ReaxManager\obj\Debug\net5.0\ReaxManager.pdb
