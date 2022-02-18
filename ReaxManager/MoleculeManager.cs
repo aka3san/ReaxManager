@@ -20,7 +20,7 @@ namespace ReaxManager
         private AtomInputData atomInputData;
 
         public MoleculeManager(AtomInputData atomInputData, int time)//ある時刻の分子一覧を管理するクラス
-        {
+        {           
             this.atomInputData = atomInputData;
             molNumToSmiles = new List<List<string>>();
             for (int i = 0; i <2; i++)
@@ -50,7 +50,7 @@ namespace ReaxManager
             for (int i = 0; i < 2; i++)
             {
                 int j = 0;
-                List<List<int>> atomList_copy = new List<List<int>>(atomInputData.AtomList[i]);
+                List<List<int>> atomList_copy = new List<List<int>>(atomInputData.AtomList[time + i]);
                 for (int k = 0; k < atomInputData.AtomList[time + i].Count; k++)
                 {
                     atomList_copy[k] = new List<int>(atomInputData.AtomList[time + i][k]);
@@ -96,7 +96,7 @@ namespace ReaxManager
                             List<int> chainedList = new List<int>();
                             while (true) //鎖の末端まで繰り返す。(一本の鎖の完成)
                             {
-                                int addAtom = atomInputData.RemoveMostChainedAtom(i, atomID, atomList_copy); //チェインリストに加える原子を決める。(atomList_copyの結合情報も削除)
+                                int addAtom = atomInputData.RemoveMostChainedAtom(time + i, atomID, atomList_copy); //チェインリストに加える原子を決める。(atomList_copyの結合情報も削除)
                                 if (addAtom == -1)
                                 {
                                     break;
@@ -151,7 +151,8 @@ namespace ReaxManager
                     {
                         molNumToString[i].Add(smiles_temp2);
                     }
-                }
+                    Console.WriteLine($"分子の列挙官僚{smiles_temp.Count()}");
+                }               
             }
 
             for (int i = 0; i < 2; i++)
