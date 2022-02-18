@@ -7,12 +7,24 @@ namespace ReaxManager
 {
     public class OutputReactionData
     {
-        private int totalTime;
+        private AtomInputData atomInputData;
         private List<int> totalMolNum;
+        private List<int> totalSpecies;
+        private List<List<int>> totalTargetMoleculeNum;
+        private List<List<List<List<string>>>> totalReaction;
+        List<Dictionary<string, int>> totalSpeciesDict;
+        List<Dictionary<string, string>> totalSmilesPlusH;
 
-        public OutputReactionData(int totalTime)
+        public OutputReactionData(AtomInputData atomInputData, List<int> totalMolNum, List<int> totalSpecies, List<List<int>> totalTargetMoleculeNum, 
+                                  List<List<List<List<string>>>> totalReaction, List<Dictionary<string, int>> totalSpeciesDict, List<Dictionary<string, string>> totalSmilesPlusH)
         {
-            this.totalTime = totalTime;
+            this.atomInputData = atomInputData;
+            this.totalMolNum = totalMolNum;
+            this.totalSpecies = totalSpecies;
+            this.totalTargetMoleculeNum = totalTargetMoleculeNum;
+            this.totalReaction = totalReaction;
+            this.totalSpeciesDict = totalSpeciesDict;
+            this.totalSmilesPlusH = totalSmilesPlusH;
         }
 
         public void OutputToTextFile()
@@ -27,37 +39,22 @@ namespace ReaxManager
             }
 
             File.AppendAllText(@"ReactionData.txt", "Number of Molecules" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
+            for (int i = 0; i < atomInputData.TotalTimeStep - 1; i++)
             {
                 File.AppendAllText(@"ReactionData.txt", $"{totalMolNum[i]}" + Environment.NewLine);
             }
 
-            File.AppendAllText(@"ReactionData.txt", "Number of D4OH" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
+            for(int i = 0; i < atomInputData.TargetMoleculeSmilesList.Count; i++)
             {
-                File.AppendAllText(@"ReactionData.txt", $"{totalD4OHNum[i]}" + Environment.NewLine);
-            }
-
-            File.AppendAllText(@"ReactionData.txt", "Number of H2O" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"{totalH2ONum[i]}" + Environment.NewLine);
-            }
-
-            File.AppendAllText(@"ReactionData.txt", "Number of O2" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"{totalO2Num[i]}" + Environment.NewLine);
-            }
-
-            File.AppendAllText(@"ReactionData.txt", "Number of Reaction" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
-            {
-                File.AppendAllText(@"ReactionData.txt", $"{totalReactionNum[i]}" + Environment.NewLine);
-            }
+                File.AppendAllText(@"ReactionData.txt", $"Number of {atomInputData.TargetMoleculeSmilesList[i]}" + Environment.NewLine);
+                for (int j = 0; j < atomInputData.TotalTimeStep - 1; j++)
+                {
+                    File.AppendAllText(@"ReactionData.txt", $"{totalTargetMoleculeNum[i][j]}" + Environment.NewLine);
+                }
+            }            
 
             File.AppendAllText(@"ReactionData.txt", "Number of Species" + Environment.NewLine);
-            for (int i = 0; i < totalTime - 1; i++)
+            for (int i = 0; i < atomInputData.TotalTimeStep - 1; i++)
             {
                 File.AppendAllText(@"ReactionData.txt", $"{totalSpecies[i]}" + Environment.NewLine);
             }

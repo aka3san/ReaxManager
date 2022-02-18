@@ -5,10 +5,10 @@
       <File FileName="../../../../../usr/local/share/dotnet/sdk/5.0.203/Sdks/Microsoft.NET.Sdk/targets/Microsoft.PackageDependencyResolution.targets" Line="1" Column="1" />
       <File FileName="AtomInputData.cs" Line="30" Column="47" />
       <File FileName="MoleculeManager.cs" Line="228" Column="22" />
-      <File FileName="ReactionManager.cs" Line="239" Column="13" />
+      <File FileName="ReactionManager.cs" Line="109" Column="9" />
       <File FileName="SortSmiles.cs" Line="61" Column="95" />
       <File FileName="OutputReactionData.cs" Line="12" Column="1" />
-      <File FileName="Main.cs" Line="8" Column="29" />
+      <File FileName="Main.cs" Line="11" Column="65" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">

@@ -9,21 +9,10 @@ namespace ReaxManager
     class ReactionManager
     {
         private AtomInputData atomInputData;       
-        public ReactionManager(AtomInputData atomInputData, MoleculeManager moleculeManager)
+        public ReactionManager(AtomInputData atomInputData)
         {
             this.atomInputData = atomInputData;            
-        }
-
-        static void Main(string[] args)
-        { 
-            /*
-            ReactionManager reactionManager = new ReactionManager();
-            reactionManager.FileOpen("bondsH2OO2_short.reaxc", 48268, 252);
-            reactionManager.GetDataPerTime(0, 252);
-            */
-            
-        }
-
+        }        
 
         void A2mList(List<int> aList, List<int> a2m, List<List<int>> m2a, List<List<int>> mList, List<int> molNumList, List<int> xAList, List<int> progressList)
         {
@@ -53,11 +42,7 @@ namespace ReaxManager
                     xAList.Add(mList[i][j]);
                 }
             }
-
-
         }
-
-
 
         public void M2aList(HashSet<int> molnum, List<List<int>> m2a, List<List<int>> mList)
         {
@@ -105,15 +90,7 @@ namespace ReaxManager
             }
             //Console.WriteLine($"進行度: {progress}/{ 48168}");
         }
-
-        
-
-        
-
-        
-
-        
-
+     
         public void SolveAllAtomsReaction(int time, bool HBIsIgnored, ref int totalMolNum, ref int totalSpecies, List<List<int>> totalTargetMoleculeNum, List<string> targetMoleculeSmilesList, ref int totalReactionNum, List<List<List<List<string>>>> totalReaction, List<Dictionary<string, int>> totalSpeciesDict, List<Dictionary<string,string>> totalSmilesPlusH)
         {
 
@@ -213,16 +190,15 @@ namespace ReaxManager
             totalReaction.Add(reac_prod_StringList);            
         }
 
-        public void GetDataPerTime(int molID, int totalTime)
+        public void GetDataPerTime()
         {
             List<int> totalMolNum = new();
             List<int> totalSpecies = new();
-            List<List<int>> totalTargetMoleculeNum = new();
-            List<int> totalReactionNum = new(); 
+            List<List<int>> totalTargetMoleculeNum = new();      
             List<List<List<List<string>>>> totalReaction = new();
             List<Dictionary<string, int>> totalSpeciesDict = new();
             List<Dictionary<string, string>> totalSmilesPlusH = new();
-            for (int i = 0; i < totalTime - 1; i++)
+            for (int i = 0; i < atomInputData.TotalTimeStep - 1; i++)
             {
                 int molNum = 0;
                 int species = 0;                
@@ -231,12 +207,12 @@ namespace ReaxManager
                 totalMolNum.Add(molNum);
                 totalSpecies.Add(species);               
                 totalReactionNum.Add(ReactionNum);
-                Console.WriteLine($"進行度: {i + 1}/{totalTime}");
-            }            
+                Console.WriteLine($"進行度: {i + 1}/{atomInputData.TotalTimeStep}");
+            }
             Console.WriteLine("テキストファイルが出力されました。");
 
             //テキストファイルに出力
-            
+            OutputReactionData outputReactionData = new OutputReactionData()
         }
     }
 }
