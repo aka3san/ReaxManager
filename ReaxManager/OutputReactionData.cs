@@ -46,10 +46,10 @@ namespace ReaxManager
 
             for(int i = 0; i < atomInputData.TargetMoleculeSmilesList.Count; i++)
             {
-                File.AppendAllText(@"ReactionData.txt", $"Number of {atomInputData.TargetMoleculeSmilesList[i]}" + Environment.NewLine);
+                File.AppendAllText(@"ReactionData.txt", $"Number of {atomInputData.TargetMoleculeSmilesList[0][i]}" + Environment.NewLine);
                 for (int j = 0; j < atomInputData.TotalTimeStep - 1; j++)
                 {
-                    File.AppendAllText(@"ReactionData.txt", $"{totalTargetMoleculeNum[i][j]}" + Environment.NewLine);
+                    File.AppendAllText(@"ReactionData.txt", $"{totalTargetMoleculeNum[j][i]}" + Environment.NewLine);
                 }
             }            
 

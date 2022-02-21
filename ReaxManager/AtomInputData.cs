@@ -64,8 +64,8 @@ namespace ReaxManager
                 this.idToType[atomID - 1] = int.Parse(line[2]);
 
             }
-            Ignore_C_();
             IgnoreHydrogenBond();
+            Ignore_C_();           
             this.totalAtomNum = this.atomList[0].Count;
         }
 
@@ -130,8 +130,8 @@ namespace ReaxManager
             {
                 return -1;//結合している全ての原子を列挙済み
             }
-            int atom = this.atomList[timeStep][atomID - 1][0];
-            foreach (int _atom in this.atomList[timeStep][atomID - 1])
+            int atom = atomList_copy[atomID - 1][0];
+            foreach (int _atom in atomList_copy[atomID - 1])
             {
                 if (this.atomList[timeStep][_atom - 1].Count > this.atomList[timeStep][atom - 1].Count)
                 {

@@ -41,7 +41,7 @@ namespace ReaxManager
             for (int i = 0; i < 2; i++)
             {
                 a2mList.Add(new List<int>());
-                for (int j = 0; j < 2; j++)
+                for (int j = 0; j < atomInputData.AtomList[0].Count; j++)
                 {
                     a2mList[i].Add(0);
                 }
@@ -96,7 +96,8 @@ namespace ReaxManager
                             List<int> chainedList = new List<int>();
                             while (true) //鎖の末端まで繰り返す。(一本の鎖の完成)
                             {
-                                int addAtom = atomInputData.RemoveMostChainedAtom(time + i, atomID, atomList_copy); //チェインリストに加える原子を決める。(atomList_copyの結合情報も削除)
+                                int addAtom = atomInputData.RemoveMostChainedAtom(time + i, atomID, atomList_copy);                                
+                                //チェインリストに加える原子を決める。(atomList_copyの結合情報も削除)
                                 if (addAtom == -1)
                                 {
                                     break;
@@ -150,8 +151,7 @@ namespace ReaxManager
                     if (smiles_temp2 != "H" && smiles_temp2 != "[H:1]")
                     {
                         molNumToString[i].Add(smiles_temp2);
-                    }
-                    Console.WriteLine($"分子の列挙官僚{smiles_temp.Count()}");
+                    }                    
                 }               
             }
 

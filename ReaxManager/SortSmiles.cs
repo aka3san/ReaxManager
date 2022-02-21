@@ -10,7 +10,7 @@ namespace ReaxManager
     {
         private List<string> molNumTosmiles;
         private List<string> molNumToString;
-        public SortSmiles(List<string> molNumToSmiles, List<string> molNumTostring)
+        public SortSmiles(List<string> molNumToSmiles, List<string> molNumToString)
         {
             this.molNumTosmiles = new List<string>(molNumToSmiles);
             this.molNumToString = new List<string>(molNumToString);
@@ -82,9 +82,10 @@ namespace ReaxManager
                 smiles2 = smiles2.Replace("=", "");
                 for(int i=0; i<molecularWeightList.Count; i++)
                 {
-                    if(smiles2.Length % molecularWeightList[i] == 0 && smiles2.Length >= molecularWeightList[i])
+                    //if(smiles2.Length % molecularWeightList[i] == 0 && smiles2.Length >= molecularWeightList[i])
+                    if (smiles2.Length == molecularWeightList[i])
                     {
-                        moleculeNumbers[i] = moleculeNumbers[i] + smiles2.Length/ moleculeNumbers[i];
+                        moleculeNumbers[i] = moleculeNumbers[i] + smiles2.Length/ molecularWeightList[i];
                     }
                 }                
             }
