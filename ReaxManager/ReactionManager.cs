@@ -86,13 +86,11 @@ namespace ReaxManager
                 A2mList(list1, moleculeManager.A2mList[1], moleculeManager.M2aList[1], prodMList, molListProd, list2, prodProgressList);
                 A2mList(list2, moleculeManager.A2mList[0], moleculeManager.M2aList[0], reacMList, molListReac, list3, reacProgressList);
                 list2.Clear();
-            }
-            Console.WriteLine($"進行度: {progress}/{ 48168}");
+            }            
         }
      
         public void SolveAllAtomsReaction(int time, ref int totalMolNum, ref int totalSpecies, ref int totalReactionNum, List<List<int>> totalTargetMoleculeNum, List<string> targetMoleculeSmilesList, List<List<List<List<string>>>> totalReaction, List<Dictionary<string, int>> totalSpeciesDict, List<Dictionary<string,string>> totalSmilesPlusH)
-        {
-            Console.Write("SolveAllAtomsReaction");
+        {            
             //分子の種類数や反応数をリストに格納する処理
             MoleculeManager moleculeManager = new MoleculeManager(atomInputData, time);
             totalMolNum = moleculeManager.MolNumToSmiles[0].Count;

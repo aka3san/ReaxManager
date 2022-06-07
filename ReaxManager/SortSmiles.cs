@@ -52,13 +52,14 @@ namespace ReaxManager
                     }
                 }
             }
+            totalSpecies = stringToSpeciesNum.Count;
         }
 
         //それぞれの分子を特定して、数え上げていく
         public List<int> CountTargetMoleculeNumbers(List<string> targetMoleculeSmilesList)
         {
             List<string> smilesList = new List<string>(molNumTosmiles);
-            List<int> molecularWeightList = SmilesToMolecularWeight(targetMoleculeSmilesList);
+            List<int> molecularWeightList = GetMolecularWeightList(targetMoleculeSmilesList);
             List<int> moleculeNumbers = new List<int>();
             for (int i=0; i<molecularWeightList.Count; i++)
             {
@@ -92,20 +93,21 @@ namespace ReaxManager
             return moleculeNumbers;
         }
 
-        private List<int> SmilesToMolecularWeight(List<string> smilesList)
+        private List<int> GetMolecularWeightList(List<string> smilesList)
         {
             List<int> molecularWeightList = new List<int>();
-            for(int i=0; i<smilesList.Count; i++)
+            List<string> smilesList_copy = new List<string>(smilesList);
+            for(int i=0; i<smilesList_copy.Count; i++)
             {
-                smilesList[i] = smilesList[i].Replace("H", "");
-                smilesList[i] = smilesList[i].Replace("[", "");
-                smilesList[i] = smilesList[i].Replace("]", "");
-                smilesList[i] = smilesList[i].Replace(":", "");
-                smilesList[i] = smilesList[i].Replace("1", "");
-                smilesList[i] = smilesList[i].Replace("(", "");
-                smilesList[i] = smilesList[i].Replace(")", "");
-                smilesList[i] = smilesList[i].Replace("=", "");
-                molecularWeightList.Add(smilesList[i].Count());
+                smilesList_copy[i] = smilesList_copy[i].Replace("H", "");
+                smilesList_copy[i] = smilesList_copy[i].Replace("[", "");
+                smilesList_copy[i] = smilesList_copy[i].Replace("]", "");
+                smilesList_copy[i] = smilesList_copy[i].Replace(":", "");
+                smilesList_copy[i] = smilesList_copy[i].Replace("1", "");
+                smilesList_copy[i] = smilesList_copy[i].Replace("(", "");
+                smilesList_copy[i] = smilesList_copy[i].Replace(")", "");
+                smilesList_copy[i] = smilesList_copy[i].Replace("=", "");
+                molecularWeightList.Add(smilesList_copy[i].Count());
             }
             return molecularWeightList;
         }
