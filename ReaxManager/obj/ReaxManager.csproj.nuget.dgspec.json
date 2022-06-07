@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/ReaxManager.csproj": {}
+    "/Users/inayoshikouya/Downloads/ReaxManager/ReaxManager/ReaxManager.csproj": {}
   },
   "projects": {
-    "/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/ReaxManager.csproj": {
+    "/Users/inayoshikouya/Downloads/ReaxManager/ReaxManager/ReaxManager.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/ReaxManager.csproj",
+        "projectUniqueName": "/Users/inayoshikouya/Downloads/ReaxManager/ReaxManager/ReaxManager.csproj",
         "projectName": "ReaxManager",
-        "projectPath": "/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/ReaxManager.csproj",
+        "projectPath": "/Users/inayoshikouya/Downloads/ReaxManager/ReaxManager/ReaxManager.csproj",
         "packagesPath": "/Users/inayoshikouya/.nuget/packages/",
-        "outputPath": "/Users/inayoshikouya/Projects/ReaxManager/ReaxManager/obj/",
+        "outputPath": "/Users/inayoshikouya/Downloads/ReaxManager/ReaxManager/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/inayoshikouya/.config/NuGet/NuGet.Config"

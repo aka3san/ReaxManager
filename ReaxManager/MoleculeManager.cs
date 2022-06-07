@@ -14,16 +14,23 @@ namespace ReaxManager
         public List<List<List<int>>> M2aList => m2aList;
         private  List<List<string>> molNumToSmiles;
         public List<List<string>> MolNumToSmiles => molNumToSmiles;
+        private List<List<string>> molNumToString;
+        public List<List<string>> MolNumToString => molNumToString;
 
         private AtomInputData atomInputData;
 
         public MoleculeManager(AtomInputData atomInputData, int time)//ある時刻の分子一覧を管理するクラス
-        {
+        {           
             this.atomInputData = atomInputData;
             molNumToSmiles = new List<List<string>>();
             for (int i = 0; i <2; i++)
             {
                 molNumToSmiles.Add(new List<string>());
+            }
+            molNumToString = new List<List<string>>();
+            for (int i = 0; i < 2; i++)
+            {
+                molNumToString.Add(new List<string>());
             }
             m2aList = new List<List<List<int>>>();
             for (int i = 0; i < 2; i++)
@@ -34,19 +41,19 @@ namespace ReaxManager
             for (int i = 0; i < 2; i++)
             {
                 a2mList.Add(new List<int>());
-                for (int j = 0; j < 2; j++)
+                for (int j = 0; j < atomInputData.AtomList[0].Count; j++)
                 {
                     a2mList[i].Add(0);
                 }
             }
-                        
+
             for (int i = 0; i < 2; i++)
             {
                 int j = 0;
-                List<List<int>> atomList_copy = new List<List<int>>(atomInputData.AtomList[i]);
+                List<List<int>> atomList_copy = new List<List<int>>(atomInputData.AtomList[time + i]);
                 for (int k = 0; k < atomInputData.AtomList[time + i].Count; k++)
                 {
-                    atomList_copy[k] = new List<int>(atomInputData.AtomList[time+i][k]);
+                    atomList_copy[k] = new List<int>(atomInputData.AtomList[time + i][k]);
                     if (atomList_copy[k].Count == 0 || atomInputData.TypeToAtom[atomInputData.IdToType[k]] == "_C_")
                     {
                         atomList_copy[k] = null;
@@ -89,7 +96,8 @@ namespace ReaxManager
                             List<int> chainedList = new List<int>();
                             while (true) //鎖の末端まで繰り返す。(一本の鎖の完成)
                             {
-                                int addAtom = atomInputData.RemoveMostChainedAtom(i, atomID, atomList_copy); //チェインリストに加える原子を決める。(atomList_copyの結合情報も削除)
+                                int addAtom = atomInputData.RemoveMostChainedAtom(time + i, atomID, atomList_copy);                                
+                                //チェインリストに加える原子を決める。(atomList_copyの結合情報も削除)
                                 if (addAtom == -1)
                                 {
                                     break;
@@ -106,21 +114,20 @@ namespace ReaxManager
                                 }
                             }
 
+
                             if (chainCount == 0)
                             {
-                                /*
+
                                 molList_temp.InsertRange(molList_temp.IndexOf(atom) + 1, chainedList);
-                                chainedList.RemoveAll(item => typeToAtom[idToType[item - 1]] == "H");
-                                */
+                                chainedList.RemoveAll(item => atomInputData.TypeToAtom[atomInputData.IdToType[item - 1]] == "H");
                                 molList_temp2.InsertRange(molList_temp2.IndexOf(atom) + 1, chainedList);
                             }
                             else if (chainCount != 0 && chainedList.Count != 0)
                             {
-                                /*
+
                                 molList_temp.Insert(molList_temp.IndexOf(atom) + 1, -1 * atom);
                                 molList_temp.InsertRange(molList_temp.IndexOf(atom) + 2, chainedList);
                                 molList_temp.Insert(molList_temp.IndexOf(atom) + 2 + chainedList.Count, 50000 + atom);
-                                */
                                 if (chainedList.Count == 1 && atomInputData.TypeToAtom[atomInputData.IdToType[chainedList[0] - 1]] == "H")
                                 {
                                     continue;
@@ -129,16 +136,37 @@ namespace ReaxManager
                                 molList_temp2.InsertRange(molList_temp2.IndexOf(atom) + 2, chainedList);
                                 molList_temp2.Insert(molList_temp2.IndexOf(atom) + 2 + chainedList.Count, 50000 + atom);
                             }
+
+
                         }
                         chainCount++;
                     }
                     string smiles_temp = ChangeFromIDToString(molList_temp2, time + i, time, true).Replace("X", "");
-
+                    string smiles_temp2 = ChangeFromIDToString(molList_temp, time + i, time, false);
                     if (smiles_temp != "" && smiles_temp != "[H:1]")
                     {
                         molNumToSmiles[i].Add(smiles_temp);
                         m2aList[i].Add(molList_temp2);
-                    }                   
+                    }
+                    if (smiles_temp2 != "H" && smiles_temp2 != "[H:1]")
+                    {
+                        molNumToString[i].Add(smiles_temp2);
+                    }                    
+                }               
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < m2aList[i].Count; j++)
+                {
+                    foreach (int a in m2aList[i][j])
+                    {
+                        if (a < 0 || a >= 50000)
+                        {
+                            continue;
+                        }
+                        a2mList[i][a - 1] = j + 1;
+                    }
                 }
             }
         }
@@ -198,7 +226,7 @@ namespace ReaxManager
             return atomChain;
         }
 
-        private bool IsListEquall(List<int> a, List<int> b)
+        static public bool IsListEquall(List<int> a, List<int> b)
         {
             if (a.Count != b.Count)
             {
